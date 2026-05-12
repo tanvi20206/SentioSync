@@ -1,0 +1,128 @@
+<div class="dashboard">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">🧠 SentioSync</div>
+    <div class="nav-right">
+      <span class="welcome">👋 {{ user?.username }}</span>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.total }}</div>
+        <div class="stat-label">Total Analyses</div>
+      </div>
+      <div class="stat-card positive">
+        <div class="stat-number">{{ stats.sentiment?.positive || 0 }}</div>
+        <div class="stat-label">😊 Positive</div>
+      </div>
+      <div class="stat-card negative">
+        <div class="stat-number">{{ stats.sentiment?.negative || 0 }}</div>
+        <div class="stat-label">😠 Negative</div>
+      </div>
+      <div class="stat-card neutral">
+        <div class="stat-number">{{ stats.sentiment?.neutral || 0 }}</div>
+        <div class="stat-label">😐 Neutral</div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+
+      <!-- Left Panel — Analyse Text -->
+      <div class="panel">
+        <h2 class="panel-title">🔍 Analyse Text</h2>
+
+        <textarea [(ngModel)]="inputText"
+          placeholder="Type or paste any text here — social media post, comment, review..." class="text-input"
+          rows="5"></textarea>
+
+        <button class="btn-analyse" (click)="analyseText()" [disabled]="isAnalysing || !inputText.trim()">
+          {{ isAnalysing ? '⏳ Analysing...' : '🚀 Analyse Sentiment' }}
+        </button>
+
+        <!-- Result -->
+        <div class="result-card" *ngIf="currentResult">
+          <div class="result-header">
+            <span class="sentiment-badge" [style.background]="getSentimentColor(currentResult.sentiment_label)">
+              {{ currentResult.sentiment_label | uppercase }}
+            </span>
+            <span class="confidence">{{ (currentResult.sentiment_score * 100).toFixed(1) }}% confident</span>
+          </div>
+          <div class="emotion-row">
+            <span class="emotion-badge">
+              {{ getEmotionEmoji(currentResult.dominant_emotion) }}
+              {{ currentResult.dominant_emotion | titlecase }}
+            </span>
+            <span class="emotion-score">{{ (currentResult.emotion_score * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="score-bars">
+            <div class="score-bar" *ngFor="let score of currentResult.sentiment_all_scores | keyvalue">
+              <span class="bar-label">{{ score.key }}</span>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="($any(score.value) * 100)" [class]="score.key"></div>
+              </div>
+              <span class="bar-val">{{ ($any(score.value) * 100).toFixed(0) }}%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mock Feed Toggle -->
+        <div class="feed-toggle">
+          <h3>⚡ Live Mock Feed</h3>
+          <p>Simulate real-time social media posts</p>
+          <button class="btn-feed" [class.active]="isMockFeedRunning" (click)="toggleMockFeed()">
+            {{ isMockFeedRunning ? '⏹ Stop Feed' : '▶ Start Live Feed' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Panel — Live Feed + History -->
+      <div class="panel">
+
+        <!-- Live Feed -->
+        <div *ngIf="feedItems.length > 0">
+          <h2 class="panel-title">⚡ Live Feed</h2>
+          <div class="feed-list">
+            <div class="feed-item" *ngFor="let item of feedItems.slice(0, 8)">
+              <p class="feed-text">{{ item.text }}</p>
+              <div class="feed-meta" *ngIf="!item.analysing && item.result">
+                <span class="mini-badge" [style.color]="getSentimentColor(item.result.sentiment_label)">
+                  {{ item.result.sentiment_label }}
+                </span>
+                <span class="mini-emotion">{{ getEmotionEmoji(item.result.dominant_emotion) }} {{
+                  item.result.dominant_emotion }}</span>
+              </div>
+              <div class="feed-meta" *ngIf="item.analysing">
+                <span class="analysing-text">⏳ analysing...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- History -->
+        <h2 class="panel-title">📜 Recent History</h2>
+        <div class="history-empty" *ngIf="history.length === 0">
+          No analyses yet — try analysing some text!
+        </div>
+        <div class="history-list">
+          <div class="history-item" *ngFor="let item of history">
+            <p class="history-text">{{ item.text.slice(0, 80) }}{{ item.text.length > 80 ? '...' : '' }}</p>
+            <div class="history-meta">
+              <span class="mini-badge" [style.color]="getSentimentColor(item.sentiment_label)">
+                {{ item.sentiment_label }}
+              </span>
+              <span class="mini-emotion">{{ getEmotionEmoji(item.dominant_emotion) }} {{ item.dominant_emotion }}</span>
+              <span class="mini-score">{{ (item.sentiment_score * 100).toFixed(0) }}%</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
