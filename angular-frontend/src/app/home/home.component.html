@@ -1,0 +1,142 @@
+<app-navbar></app-navbar>
+
+<main class="home">
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="particles">
+            <div class="particle" *ngFor="let p of particles" [style.left.%]="p.left" [style.top.%]="p.top"
+                [style.animation-delay.s]="p.delay" [style.animation-duration.s]="p.duration"
+                [style.font-size.rem]="p.size">
+                {{ p.emoji }}
+            </div>
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-badge">🚀 Powered by RoBERTa AI</div>
+            <h1 class="hero-title">
+                AI That Can<br>
+                <span class="typewriter">{{ typewriterText }}<span class="cursor">|</span></span>
+            </h1>
+            <p class="hero-subtitle">
+                Analyse sentiment and emotions from any text in real-time.
+                Built with Django, Node.js, Angular & HuggingFace transformers.
+            </p>
+            <div class="hero-actions">
+                <a routerLink="/signup" class="btn-hero-primary">Get Started Free →</a>
+                <a routerLink="/about" class="btn-hero-ghost">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Live Demo Card -->
+        <div class="demo-card">
+            <div class="demo-header">
+                <span class="demo-dot red"></span>
+                <span class="demo-dot yellow"></span>
+                <span class="demo-dot green"></span>
+                <span class="demo-title">Live Demo</span>
+            </div>
+            <textarea class="demo-input" [(ngModel)]="demoInput" rows="3"
+                placeholder="Type any text...">{{ demoInput }}</textarea>
+            <button class="demo-btn" (click)="runDemo()" [disabled]="isDemoLoading">
+                {{ isDemoLoading ? '⏳ Analysing...' : '🚀 Analyse' }}
+            </button>
+            <div class="demo-result" *ngIf="demoResult">
+                <div class="demo-sentiment" [style.color]="getSentimentColor(demoResult.sentiment_label)">
+                    {{ demoResult.sentiment_label | uppercase }} — {{ (demoResult.sentiment_score * 100).toFixed(1) }}%
+                </div>
+                <div class="demo-emotion">
+                    {{ getEmotionEmoji(demoResult.dominant_emotion) }} {{ demoResult.dominant_emotion | titlecase }} ({{
+                    (demoResult.emotion_score * 100).toFixed(1) }}%)
+                </div>
+                <div class="demo-bars">
+                    <div class="demo-bar" *ngFor="let item of demoResult.sentiment_all_scores | keyvalue">
+                        <span>{{ item.key }}</span>
+                        <div class="bar-bg">
+                            <div class="bar-fg" [style.width.%]="($any(item.value) * 100)" [class]="item.key"></div>
+                        </div>
+                        <span>{{ ($any(item.value) * 100).toFixed(0) }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-placeholder" *ngIf="!demoResult && !isDemoLoading">
+                ↑ Try it — type anything and click Analyse!
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item" *ngFor="let stat of stats">
+                    <div class="stat-val">{{ stat.display || stat.value }}{{ stat.suffix }}</div>
+                    <div class="stat-lbl">{{ stat.label }}</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Everything You Need</h2>
+                <p>A complete sentiment analytics platform built with modern tech</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" *ngFor="let f of features">
+                    <div class="feature-icon">{{ f.icon }}</div>
+                    <h3>{{ f.title }}</h3>
+                    <p>{{ f.desc }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>3 simple steps to understand any text</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-num">01</div>
+                    <div class="step-icon">✍️</div>
+                    <h3>Input Text</h3>
+                    <p>Type, paste, or upload a CSV of texts you want to analyse</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step-card">
+                    <div class="step-num">02</div>
+                    <div class="step-icon">🤖</div>
+                    <h3>AI Analyses</h3>
+                    <p>Our RoBERTa model detects sentiment and 7 emotion categories</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step-card">
+                    <div class="step-num">03</div>
+                    <div class="step-icon">📊</div>
+                    <h3>See Results</h3>
+                    <p>Get beautiful charts, scores, and real-time emotion breakdowns</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <h2>Ready to Decode Emotions?</h2>
+                <p>Join and start analysing text with AI in seconds</p>
+                <a routerLink="/signup" class="btn-hero-primary">Start for Free →</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<app-footer></app-footer>

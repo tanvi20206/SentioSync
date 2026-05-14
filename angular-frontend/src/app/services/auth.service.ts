@@ -54,6 +54,23 @@ export class AuthService {
     localStorage.setItem('refresh_token', res.tokens.refresh);
     localStorage.setItem('user', JSON.stringify(res.user));
     this.isLoggedInSubject.next(true);
+
+    // Auto logout — 55 minutes baad (token 1 hour mein expire hota hai)
+    this.scheduleAutoLogout(55 * 60 * 1000);
+  }
+
+  private autoLogoutTimer: any = null;
+
+  scheduleAutoLogout(duration: number): void {
+    // Pehla timer clear karo agar chal raha ho
+    if (this.autoLogoutTimer) {
+      clearTimeout(this.autoLogoutTimer);
+    }
+
+    this.autoLogoutTimer = setTimeout(() => {
+      alert('⏰ Session expired! Please login again.');
+      this.logout();
+    }, duration);
   }
 
   getProfile(): Observable<any> {

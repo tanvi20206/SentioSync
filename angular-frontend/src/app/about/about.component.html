@@ -1,0 +1,121 @@
+<app-navbar></app-navbar>
+
+<main class="about">
+
+    <!-- Hero -->
+    <section class="about-hero">
+        <div class="container">
+            <div class="hero-badge">ℹ️ About SentioSync</div>
+            <h1>Built by a Student,<br><span class="gradient-text">Powered by Real AI</span></h1>
+            <p>SentioSync is a full-stack AI sentiment analytics platform built as an 8th semester final year project.
+                It uses state-of-the-art transformer models to detect emotions from text in real-time.</p>
+            <div class="hero-btns">
+                <a href="https://github.com/tanvi20206/SentioSync" target="_blank" class="btn-primary">View on GitHub
+                    →</a>
+                <a routerLink="/dashboard" class="btn-ghost">Try Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- What is SentioSync -->
+    <section class="what-section">
+        <div class="container">
+            <div class="what-grid">
+                <div class="what-content">
+                    <h2>What is SentioSync?</h2>
+                    <p>SentioSync is a platform that uses <strong>Natural Language Processing (NLP)</strong> and
+                        <strong>Deep Learning</strong> to analyse the sentiment and emotions behind any piece of text.
+                    </p>
+                    <p>Whether it's a social media post, customer review, or any message — SentioSync can tell you if
+                        it's <span class="tag positive">Positive</span>, <span class="tag negative">Negative</span>, or
+                        <span class="tag neutral">Neutral</span>, and which emotion dominates — <strong>joy, anger,
+                            fear, sadness, surprise, or disgust</strong>.
+                    </p>
+                    <p>It was built using a <strong>dual backend architecture</strong> — Django handles all AI/ML
+                        processing while Node.js handles real-time WebSocket connections.</p>
+                </div>
+                <div class="what-stats">
+                    <div class="what-stat"><span class="big-num">2</span><span class="big-lbl">AI Models</span></div>
+                    <div class="what-stat"><span class="big-num">7</span><span class="big-lbl">Emotions Detected</span>
+                    </div>
+                    <div class="what-stat"><span class="big-num">3</span><span class="big-lbl">Backends Used</span>
+                    </div>
+                    <div class="what-stat"><span class="big-num">6</span><span class="big-lbl">Pages Built</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Models -->
+    <section class="models-section">
+        <div class="container">
+            <div class="section-head">
+                <h2>AI Models Used</h2>
+                <p>Production-grade HuggingFace transformer models</p>
+            </div>
+            <div class="models-grid">
+                <div class="model-card" *ngFor="let m of models">
+                    <div class="model-header">
+                        <span class="model-task">{{ m.task }}</span>
+                        <span class="model-acc">{{ m.accuracy }} accuracy</span>
+                    </div>
+                    <div class="model-name">{{ m.name }}</div>
+                    <p class="model-desc">{{ m.desc }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="stack-section">
+        <div class="container">
+            <div class="section-head">
+                <h2>Tech Stack</h2>
+                <p>Everything used to build SentioSync</p>
+            </div>
+            <div class="stack-grid">
+                <div class="stack-card" *ngFor="let s of techStack">
+                    <div class="stack-icon">{{ s.icon }}</div>
+                    <div class="stack-category">{{ s.category }}</div>
+                    <div class="stack-items">
+                        <span class="stack-item" *ngFor="let item of s.items">{{ item }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Build Timeline -->
+    <section class="timeline-section">
+        <div class="container">
+            <div class="section-head">
+                <h2>Build Timeline</h2>
+                <p>Built day by day — from zero to full stack</p>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item" *ngFor="let t of timeline; let i = index">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-day">{{ t.day }}</div>
+                        <div class="timeline-title">{{ t.title }}</div>
+                        <div class="timeline-desc">{{ t.desc }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Want to Try It?</h2>
+                <p>Sign up and start analysing text with real AI</p>
+                <a routerLink="/signup" class="btn-primary">Get Started Free →</a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<app-footer></app-footer>

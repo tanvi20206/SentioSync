@@ -1,1 +1,34 @@
-<p>navbar works!</p>
+<nav class="navbar" [class.scrolled]="isScrolled">
+    <div class="nav-container">
+        <a routerLink="/" class="nav-brand">
+            <span class="brand-icon">🧠</span>
+            <span class="brand-text">SentioSync</span>
+        </a>
+
+        <div class="nav-links" [class.open]="isMobileMenuOpen">
+            <a routerLink="/home" routerLinkActive="active" (click)="isMobileMenuOpen=false">Home</a>
+            <a routerLink="/about" routerLinkActive="active" (click)="isMobileMenuOpen=false">About</a>
+            <a routerLink="/contact" routerLinkActive="active" (click)="isMobileMenuOpen=false">Contact</a>
+            <ng-container *ngIf="isLoggedIn">
+                <a routerLink="/dashboard" routerLinkActive="active" (click)="isMobileMenuOpen=false">Dashboard</a>
+                <a routerLink="/history" routerLinkActive="active" (click)="isMobileMenuOpen=false">History</a>
+                <a routerLink="/profile" routerLinkActive="active" (click)="isMobileMenuOpen=false">Profile</a>
+            </ng-container>
+        </div>
+
+        <div class="nav-actions">
+            <ng-container *ngIf="!isLoggedIn">
+                <a routerLink="/login" class="btn-ghost">Login</a>
+                <a routerLink="/signup" class="btn-primary">Get Started</a>
+            </ng-container>
+            <ng-container *ngIf="isLoggedIn">
+                <span class="user-chip">👋 {{ user?.username }}</span>
+                <button class="btn-ghost" (click)="logout()">Logout</button>
+            </ng-container>
+        </div>
+
+        <button class="hamburger" (click)="toggleMenu()" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+        </div>
+        </nav>
