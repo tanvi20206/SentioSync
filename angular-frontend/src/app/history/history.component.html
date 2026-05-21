@@ -1,0 +1,104 @@
+<app-navbar></app-navbar>
+
+<main class="history-page">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="page-header">
+            <div>
+                <h1>📜 Analysis History</h1>
+                <p>All your past sentiment analyses in one place</p>
+            </div>
+            <button class="btn-export" (click)="exportCSV()" [disabled]="filteredItems.length === 0">
+                📥 Export CSV
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-card">
+            <input class="search-input" type="text" [(ngModel)]="searchText" (ngModelChange)="applyFilters()"
+                placeholder="🔍 Search by text..." />
+            <select class="filter-select" [(ngModel)]="selectedSentiment" (ngModelChange)="applyFilters()">
+                <option value="all">All Sentiments</option>
+                <option *ngFor="let s of sentiments.slice(1)" [value]="s">{{ s | titlecase }}</option>
+            </select>
+            <select class="filter-select" [(ngModel)]="selectedEmotion" (ngModelChange)="applyFilters()">
+                <option value="all">All Emotions</option>
+                <option *ngFor="let e of emotions.slice(1)" [value]="e">{{ emotionEmoji[e] }} {{ e | titlecase }}
+                </option>
+            </select>
+            <button class="btn-clear" (click)="clearFilters()">Clear</button>
+        </div>
+
+        <!-- Count -->
+        <div class="results-count" *ngIf="!isLoading">
+            Showing <strong>{{ filteredItems.length }}</strong> of <strong>{{ allItems.length }}</strong> analyses
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-state" *ngIf="isLoading">
+            <div class="spinner"></div>
+            <p>Loading history...</p>
+        </div>
+
+        <!-- Empty -->
+        <div class="empty-state" *ngIf="!isLoading && filteredItems.length === 0">
+            <div class="empty-icon">🔍</div>
+            <h3>No results found</h3>
+            <p *ngIf="allItems.length === 0">You haven't analysed any text yet!</p>
+            <p *ngIf="allItems.length > 0">Try changing your filters</p>
+            <a routerLink="/dashboard" class="btn-go" *ngIf="allItems.length === 0">Go to Dashboard →</a>
+            <button class="btn-go" (click)="clearFilters()" *ngIf="allItems.length > 0">Clear Filters</button>
+        </div>
+
+        <!-- History List -->
+        <div class="history-list" *ngIf="!isLoading && filteredItems.length > 0">
+            <div class="history-card" *ngFor="let item of filteredItems">
+
+                <div class="card-main">
+                    <p class="card-text">{{ item.text }}</p>
+                    <div class="card-meta">
+                        <span class="sentiment-tag" [style.color]="sentimentColor[item.sentiment_label]"
+                            [style.background]="sentimentColor[item.sentiment_label] + '18'">
+                            {{ item.sentiment_label | uppercase }}
+                            {{ (item.sentiment_score * 100).toFixed(0) }}%
+                        </span>
+                        <span class="emotion-tag">
+                            {{ emotionEmoji[item.dominant_emotion] }}
+                            {{ item.dominant_emotion | titlecase }}
+                            {{ (item.emotion_score * 100).toFixed(0) }}%
+                        </span>
+                        <span class="date-tag">{{ item.created_at | date:'MMM d, y' }}</span>
+                    </div>
+                </div>
+
+                <!-- Score Bars -->
+                <div class="score-bars">
+                    <div class="bar-row" *ngFor="let s of item.sentiment_all_scores | keyvalue">
+                        <span class="bar-lbl">{{ s.key }}</span>
+                        <div class="bar-bg">
+                            <div class="bar-fill" [class]="s.key" [style.width.%]="$any(s.value) * 100"></div>
+                        </div>
+                        <span class="bar-pct">{{ ($any(s.value) * 100).toFixed(0) }}%</span>
+                    </div>
+                </div>
+
+                <!-- Delete -->
+                <div class="card-actions">
+                    <div *ngIf="deleteId !== item.id">
+                        <button class="btn-delete" (click)="deleteId = item.id">🗑️ Delete</button>
+                    </div>
+                    <div class="confirm-delete" *ngIf="deleteId === item.id">
+                        <span>Are you sure?</span>
+                        <button class="btn-confirm" (click)="deleteItem(item.id)">Yes, Delete</button>
+                        <button class="btn-cancel" (click)="deleteId = null">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<app-footer></app-footer>

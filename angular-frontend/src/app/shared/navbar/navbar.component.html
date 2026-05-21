@@ -1,10 +1,12 @@
-<nav class="navbar" [class.scrolled]="isScrolled">
+<nav class="navbar" [class.scrolled]="isScrolled" [class.dark]="isDark">
     <div class="nav-container">
-        <a routerLink="/" class="nav-brand">
+<!-- Brand -->
+<a routerLink="/home" class="nav-brand">
             <span class="brand-icon">🧠</span>
             <span class="brand-text">SentioSync</span>
         </a>
 
+        <!-- Nav Links -->
         <div class="nav-links" [class.open]="isMobileMenuOpen">
             <a routerLink="/home" routerLinkActive="active" (click)="isMobileMenuOpen=false">Home</a>
             <a routerLink="/about" routerLinkActive="active" (click)="isMobileMenuOpen=false">About</a>
@@ -12,23 +14,60 @@
             <ng-container *ngIf="isLoggedIn">
                 <a routerLink="/dashboard" routerLinkActive="active" (click)="isMobileMenuOpen=false">Dashboard</a>
                 <a routerLink="/history" routerLinkActive="active" (click)="isMobileMenuOpen=false">History</a>
-                <a routerLink="/profile" routerLinkActive="active" (click)="isMobileMenuOpen=false">Profile</a>
             </ng-container>
         </div>
 
+        <!-- Right Actions -->
         <div class="nav-actions">
+<!-- Dark/Light Toggle -->
+<button class="icon-btn" (click)="toggleTheme()" [title]="isDark ? 'Light Mode' : 'Dark Mode'">
+    {{ isDark ? '☀️' : '🌙' }}
+</button>
+
+<!-- Not logged in -->
             <ng-container *ngIf="!isLoggedIn">
                 <a routerLink="/login" class="btn-ghost">Login</a>
                 <a routerLink="/signup" class="btn-primary">Get Started</a>
             </ng-container>
+<!-- Logged in -->
             <ng-container *ngIf="isLoggedIn">
-                <span class="user-chip">👋 {{ user?.username }}</span>
-                <button class="btn-ghost" (click)="logout()">Logout</button>
+                <!-- Profile Icon with dropdown -->
+                <div class="profile-menu" (click)="toggleProfileMenu()" [class.open]="isProfileMenuOpen">
+                    <div class="profile-avatar" [title]="user?.username">
+                        {{ getInitials() }}
+                    </div>
+                    <!-- Dropdown -->
+                    <div class="profile-dropdown" *ngIf="isProfileMenuOpen">
+                        <div class="dropdown-header">
+                            <div class="dropdown-name">{{ user?.username }}</div>
+                            <div class="dropdown-email">{{ user?.email }}</div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a routerLink="/profile" class="dropdown-item" (click)="isProfileMenuOpen=false">
+                            👤 My Profile
+                        </a>
+                        <a routerLink="/history" class="dropdown-item" (click)="isProfileMenuOpen=false">
+                            📜 History
+                        </a>
+                        <a routerLink="/dashboard" class="dropdown-item" (click)="isProfileMenuOpen=false">
+                            📊 Dashboard
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item logout-item" (click)="logout()">
+                            🚪 Logout
+                        </button>
+                    </div>
+                </div>
             </ng-container>
+
         </div>
 
-        <button class="hamburger" (click)="toggleMenu()" aria-label="Toggle menu">
+        <!-- Hamburger -->
+        <button class="hamburger" (click)="toggleMenu()">
             <span></span><span></span><span></span>
         </button>
-        </div>
-        </nav>
+
+    </div>
+    </nav>
+<!-- Backdrop to close dropdown -->
+<div class="backdrop" *ngIf="isProfileMenuOpen" (click)="isProfileMenuOpen=false"></div>

@@ -1,42 +1,101 @@
-/* You can add global styles to this file, and also import other style files */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #0f0f1a;
-  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f8faff;
+  color: #1a1a2e;
   min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-::-webkit-scrollbar-thumb {
-  background: #7c6af7;
-  border-radius: 3px;
+/* ── Dark Mode Global ─────────────────────────────── */
+body.dark-mode {
+  background: #0f0f1a;
+  color: #e2e8f0;
+
+  /* Cards */
+  .profile-hero, .edit-card, .history-card,
+  .stat-card, .emotion-card, .filters-card,
+  .feature-card, .step, .model-card, .stack-card,
+  .faq-item, .form-card, .demo-card, .what-stat {
+    background: #1a1a2e !important;
+    border-color: rgba(255,255,255,0.08) !important;
+    color: #e2e8f0 !important;
+  }
+
+  /* Text */
+  h1, h2, h3, h4 { color: #f1f5f9 !important; }
+  p, span, label { color: rgba(255,255,255,0.65) !important; }
+
+  /* Inputs */
+  input, textarea, select {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    color: #fff !important;
+    &::placeholder { color: rgba(255,255,255,0.3) !important; }
+    &:focus { border-color: #667eea !important; }
+  }
+
+  /* Backgrounds */
+  .home, .about, .contact, .history-page,
+  .profile-page, .dashboard { background: #0f0f1a !important; }
+
+  .about-hero, .contact-hero { background: linear-gradient(135deg, #1a1a2e, #16213e) !important; }
+  .features, .what-section, .stack-section { background: #0f0f1a !important; }
+  .how-it-works, .faq-section, .models-section,
+  .timeline-section, .contact-main { background: #0f0f1a !important; }
+
+  /* Stats bar stays purple */
+  .stats-bar { background: linear-gradient(135deg, #667eea, #764ba2) !important; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+  ::-webkit-scrollbar-thumb { background: #667eea; border-radius: 3px; }
+
+  /* Nav links in mobile */
+  .nav-links { background: rgba(15,15,26,0.98) !important; }
+
+  /* Footer already dark */
+  .footer { background: #080810 !important; }
+
+  /* Tags */
+  .emotion-tag { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.1) !important; }
+  .bar-bg, .emotion-bar-bg { background: rgba(255,255,255,0.1) !important; }
+  .stack-item { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.1) !important; }
 }
 
-/* Common utility classes */
-.text-center {
-  text-align: center;
+/* ── Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+::-webkit-scrollbar-thumb { background: #667eea; border-radius: 3px; }
+
+/* ── Smooth page transitions ──────────────────────── */
+router-outlet + * {
+  animation: fadeIn 0.3s ease;
 }
-.mt-1 {
-  margin-top: 0.5rem;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.mt-2 {
-  margin-top: 1rem;
+
+
+body.dark-mode .history-text,
+body.dark-mode .feed-text,
+body.dark-mode .card-text {
+  color: #e2e8f0 !important;
 }
-.mb-1 {
-  margin-bottom: 0.5rem;
+
+body.dark-mode .history-item,
+body.dark-mode .feed-item {
+  background: #1e1e3a !important;
+  border-color: rgba(255,255,255,0.1) !important;
 }
-.mb-2 {
-  margin-bottom: 1rem;
+
+body.dark-mode .panel {
+  background: #1a1a2e !important;
+}
+
+body.dark-mode .stat-card {
+  background: #1a1a2e !important;
 }

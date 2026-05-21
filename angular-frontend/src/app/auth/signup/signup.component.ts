@@ -45,22 +45,22 @@ export class SignupComponent {
     this.isLoading = true;
     this.errorMessage = '';
     this.authService.signup(this.signupForm.value).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
+      next: () => this.router.navigate(['/home']),
       error: (err) => {
-if (typeof err.error === 'string') {
-  this.errorMessage = err.error;
-} else if (err.error?.detail) {
-  this.errorMessage = err.error.detail;
-} else if (err.error?.email) {
-  this.errorMessage = 'Email: ' + err.error.email[0];
-} else if (err.error?.username) {
-  this.errorMessage = 'Username: ' + err.error.username[0];
-} else if (err.error?.password) {
-  this.errorMessage = 'Password: ' + err.error.password[0];
-} else {
-  this.errorMessage = 'Signup failed. Please try again.';
-}
-this.isLoading = false;
+        if (typeof err.error === 'string') {
+          this.errorMessage = err.error;
+        } else if (err.error?.detail) {
+          this.errorMessage = err.error.detail;
+        } else if (err.error?.email) {
+          this.errorMessage = 'Email: ' + err.error.email[0];
+        } else if (err.error?.username) {
+          this.errorMessage = 'Username: ' + err.error.username[0];
+        } else if (err.error?.password) {
+          this.errorMessage = 'Password: ' + err.error.password[0];
+        } else {
+          this.errorMessage = 'Signup failed. Please try again.';
+        }
+        this.isLoading = false;
       },
     });
   }

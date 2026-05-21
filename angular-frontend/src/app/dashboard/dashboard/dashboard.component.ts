@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,6 +7,8 @@ import { SentimentService } from '../../services/sentiment.service';
 import { SocketService } from '../../services/socket.service';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
+import gsap from 'gsap';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -14,7 +16,7 @@ import { FooterComponent } from '../../shared/footer/footer.component';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   user: any = null;
   inputText = '';
   isAnalysing = false;
@@ -44,6 +46,32 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loadHistory();
     this.loadStats();
     this.setupSocket();
+  }
+
+  ngAfterViewInit(): void {
+    // GSAP Animations
+    gsap.from('.dash-header', {
+      duration: 0.6,
+      y: -20,
+      opacity: 0,
+      ease: 'power2.out',
+    });
+    gsap.from('.stat-card', {
+      duration: 0.5,
+      y: 30,
+      opacity: 0,
+      stagger: 0.1,
+      ease: 'power2.out',
+      delay: 0.2,
+    });
+    gsap.from('.panel', {
+      duration: 0.6,
+      y: 40,
+      opacity: 0,
+      stagger: 0.15,
+      ease: 'power2.out',
+      delay: 0.4,
+    });
   }
 
   setupSocket(): void {
@@ -77,6 +105,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.isAnalysing = false;
         this.loadHistory();
         this.loadStats();
+        // Animate result card
+        setTimeout(() => {
+          gsap.from('.result-card', {
+            duration: 0.5,
+            scale: 0.95,
+            opacity: 0,
+            ease: 'back.out(1.7)',
+          });
+        }, 50);
       },
       error: () => {
         this.isAnalysing = false;
@@ -91,21 +128,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
       },
     });
   }
+
   loadStats(): void {
     this.sentimentService.getHistory().subscribe({
       next: (res: any) => {
         const results = res.results || [];
-        const stats = {
+        const stats: any = {
           total: results.length,
           sentiment: { positive: 0, negative: 0, neutral: 0 },
-          emotions: {} as any,
+          emotions: {},
         };
         results.forEach((item: any) => {
-          if (item.sentiment_label) {
-            stats.sentiment[
-              item.sentiment_label as 'positive' | 'negative' | 'neutral'
-            ]++;
-          }
+          if (item.sentiment_label) stats.sentiment[item.sentiment_label]++;
           if (item.dominant_emotion) {
             stats.emotions[item.dominant_emotion] =
               (stats.emotions[item.dominant_emotion] || 0) + 1;
@@ -113,7 +147,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
         this.stats = stats;
       },
-      error: () => {},
     });
   }
 
@@ -142,11 +175,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getSentimentColor(label: string): string {
     const map: any = {
-      positive: '#4ade80',
-      negative: '#f87171',
+      positive: '#22c55e',
+      negative: '#ef4444',
       neutral: '#94a3b8',
     };
-    return map[label] || '#fff';
+    return map[label] || '#667eea';
   }
 
   logout(): void {

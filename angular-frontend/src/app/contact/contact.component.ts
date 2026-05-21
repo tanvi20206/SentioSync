@@ -6,7 +6,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+// import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
 import { FooterComponent } from '../shared/footer/footer.component';
 
@@ -16,7 +16,7 @@ import { FooterComponent } from '../shared/footer/footer.component';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterLink,
+    // RouterLink,
     NavbarComponent,
     FooterComponent,
   ],

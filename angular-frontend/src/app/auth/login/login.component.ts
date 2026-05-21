@@ -27,7 +27,7 @@ export class LoginComponent {
     private router: Router,
   ) {
     if (this.authService.hasToken()) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/home']);
     }
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -41,7 +41,7 @@ export class LoginComponent {
     this.errorMessage = '';
     const { email, password } = this.loginForm.value;
     this.authService.login(email, password).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
+      next: () => this.router.navigate(['/home']),
       error: (err) => {
         this.errorMessage = err.error?.error || 'Login failed.';
         this.isLoading = false;

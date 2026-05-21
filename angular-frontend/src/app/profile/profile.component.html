@@ -1,0 +1,107 @@
+<app-navbar></app-navbar>
+
+<main class="profile-page">
+
+    <div class="container">
+
+        <!-- Top Card — Avatar + Name + Badge -->
+        <div class="profile-hero">
+            <div class="avatar" [style.background]="getEmotionColor()">
+                {{ getInitials() }}
+            </div>
+            <div class="profile-info">
+                <h1>{{ user?.username }}</h1>
+                <p class="email">{{ user?.email }}</p>
+                <div class="emotion-badge" *ngIf="topEmotion" [style.background]="getEmotionColor() + '22'"
+                    [style.color]="getEmotionColor()">
+                    {{ getEmotionEmoji() }} {{ getEmotionLabel() }}
+                </div>
+                <p class="bio-text" *ngIf="user?.bio && !isEditing">{{ user?.bio }}</p>
+                <p class="bio-empty" *ngIf="!user?.bio && !isEditing">No bio yet — click Edit to add one</p>
+            </div>
+            <div class="profile-actions">
+                <button class="btn-edit" (click)="toggleEdit()">
+                    {{ isEditing ? 'Cancel' : 'Edit Profile' }}
+                </button>
+                <button class="btn-logout" (click)="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Success Toast -->
+        <div class="toast-success" *ngIf="saveSuccess">
+            ✅ Profile updated successfully!
+        </div>
+
+        <!-- Edit Form -->
+        <div class="edit-card" *ngIf="isEditing">
+            <h2>Edit Profile</h2>
+            <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" formControlName="username" placeholder="Your username" />
+                </div>
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea formControlName="bio" rows="3" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                <button type="submit" class="btn-save" [disabled]="isSaving || profileForm.invalid">
+                    {{ isSaving ? 'Saving...' : 'Save Changes' }}
+                </button>
+            </form>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-section">
+            <h2 class="section-title">Your Analytics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-num">{{ stats.total }}</div>
+                    <div class="stat-lbl">Total Analyses</div>
+                </div>
+                <div class="stat-card positive">
+                    <div class="stat-num">{{ stats.sentiment?.positive || 0 }}</div>
+                    <div class="stat-lbl">😊 Positive</div>
+                    <div class="stat-pct">{{ getSentimentPercent('positive') }}%</div>
+                </div>
+                <div class="stat-card negative">
+                    <div class="stat-num">{{ stats.sentiment?.negative || 0 }}</div>
+                    <div class="stat-lbl">😠 Negative</div>
+                    <div class="stat-pct">{{ getSentimentPercent('negative') }}%</div>
+                </div>
+                <div class="stat-card neutral">
+                    <div class="stat-num">{{ stats.sentiment?.neutral || 0 }}</div>
+                    <div class="stat-lbl">😐 Neutral</div>
+                    <div class="stat-pct">{{ getSentimentPercent('neutral') }}%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emotion Breakdown -->
+        <div class="emotion-section" *ngIf="stats.total > 0">
+            <h2 class="section-title">Emotion Breakdown</h2>
+            <div class="emotion-grid">
+                <div class="emotion-card" *ngFor="let e of stats.emotions | keyvalue">
+                    <div class="emotion-emoji">{{ emotionMap[$any(e.key)]?.emoji || '🤔' }}</div>
+                    <div class="emotion-name">{{ $any(e.key) | titlecase }}</div>
+                    <div class="emotion-count">{{ e.value }} times</div>
+                    <div class="emotion-bar-bg">
+                        <div class="emotion-bar-fill" [style.width.%]="($any(e.value) / stats.total) * 100"
+                            [style.background]="emotionMap[$any(e.key)]?.color || '#667eea'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="stats.total === 0">
+            <div class="empty-icon">🧠</div>
+            <h3>No analyses yet!</h3>
+            <p>Go to the dashboard and start analysing text to see your emotion profile here.</p>
+            <a routerLink="/dashboard" class="btn-go">Go to Dashboard →</a>
+        </div>
+
+    </div>
+</main>
+
+<app-footer></app-footer>

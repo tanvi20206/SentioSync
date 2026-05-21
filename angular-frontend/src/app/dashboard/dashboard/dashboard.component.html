@@ -1,16 +1,13 @@
 <app-navbar></app-navbar>
+
 <div class="dashboard">
-
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="nav-brand">🧠 SentioSync</div>
-    <div class="nav-right">
-      <span class="welcome">👋 {{ user?.username }}</span>
-      <button class="btn-logout" (click)="logout()">Logout</button>
-    </div>
-  </nav>
-
   <div class="container">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <h1>👋 Welcome back, {{ user?.username }}!</h1>
+      <p>Analyse text and track your emotion trends in real-time</p>
+    </div>
 
     <!-- Stats Row -->
     <div class="stats-row">
@@ -34,13 +31,13 @@
 
     <div class="main-grid">
 
-      <!-- Left Panel — Analyse Text -->
+      <!-- Left Panel -->
       <div class="panel">
-        <h2 class="panel-title">🔍 Analyse Text</h2>
+        <div class="panel-title">🔍 Analyse Text</div>
 
         <textarea [(ngModel)]="inputText"
-          placeholder="Type or paste any text here — social media post, comment, review..." class="text-input"
-          rows="5"></textarea>
+          placeholder="Type or paste any text here — social media post, comment, review..." class="text-input" rows="5">
+        </textarea>
 
         <button class="btn-analyse" (click)="analyseText()" [disabled]="isAnalysing || !inputText.trim()">
           {{ isAnalysing ? '⏳ Analysing...' : '🚀 Analyse Sentiment' }}
@@ -65,14 +62,14 @@
             <div class="score-bar" *ngFor="let score of currentResult.sentiment_all_scores | keyvalue">
               <span class="bar-label">{{ score.key }}</span>
               <div class="bar-track">
-                <div class="bar-fill" [style.width.%]="($any(score.value) * 100)" [class]="score.key"></div>
+                <div class="bar-fill" [class]="score.key" [style.width.%]="($any(score.value) * 100)"></div>
               </div>
               <span class="bar-val">{{ ($any(score.value) * 100).toFixed(0) }}%</span>
             </div>
           </div>
         </div>
 
-        <!-- Mock Feed Toggle -->
+        <!-- Mock Feed -->
         <div class="feed-toggle">
           <h3>⚡ Live Mock Feed</h3>
           <p>Simulate real-time social media posts</p>
@@ -82,12 +79,12 @@
         </div>
       </div>
 
-      <!-- Right Panel — Live Feed + History -->
+      <!-- Right Panel -->
       <div class="panel">
 
         <!-- Live Feed -->
         <div *ngIf="feedItems.length > 0">
-          <h2 class="panel-title">⚡ Live Feed</h2>
+          <div class="panel-title">⚡ Live Feed</div>
           <div class="feed-list">
             <div class="feed-item" *ngFor="let item of feedItems.slice(0, 8)">
               <p class="feed-text">{{ item.text }}</p>
@@ -95,8 +92,9 @@
                 <span class="mini-badge" [style.color]="getSentimentColor(item.result.sentiment_label)">
                   {{ item.result.sentiment_label }}
                 </span>
-                <span class="mini-emotion">{{ getEmotionEmoji(item.result.dominant_emotion) }} {{
-                  item.result.dominant_emotion }}</span>
+                <span class="mini-emotion">
+                  {{ getEmotionEmoji(item.result.dominant_emotion) }} {{ item.result.dominant_emotion }}
+                </span>
               </div>
               <div class="feed-meta" *ngIf="item.analysing">
                 <span class="analysing-text">⏳ analysing...</span>
@@ -106,13 +104,13 @@
         </div>
 
         <!-- History -->
-        <h2 class="panel-title">📜 Recent History</h2>
+        <div class="panel-title">📜 Recent History</div>
         <div class="history-empty" *ngIf="history.length === 0">
           No analyses yet — try analysing some text!
         </div>
         <div class="history-list">
           <div class="history-item" *ngFor="let item of history">
-            <p class="history-text">{{ item.text.slice(0, 80) }}{{ item.text.length > 80 ? '...' : '' }}</p>
+            <p class="history-text" style="color: inherit">{{ item.text.slice(0, 80) }}{{ item.text.length > 80 ? '...' : '' }}</p>
             <div class="history-meta">
               <span class="mini-badge" [style.color]="getSentimentColor(item.sentiment_label)">
                 {{ item.sentiment_label }}
@@ -127,4 +125,5 @@
     </div>
   </div>
 </div>
+
 <app-footer></app-footer>
