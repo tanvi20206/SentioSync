@@ -1,0 +1,240 @@
+<app-navbar></app-navbar>
+
+<main class="wa-page">
+    <div class="container">
+
+        <!-- ── UPLOAD STEP ─────────────────────────────── -->
+        <div *ngIf="step === 'upload'">
+            <div class="page-hero">
+                <div class="hero-badge">💬 WhatsApp Chat Analyser</div>
+                <h1>Decode Your <span class="gradient-text">Conversations</span></h1>
+                <p>Upload your WhatsApp chat export and discover the emotions, sentiments, and mood patterns hidden in
+                    your conversations.</p>
+            </div>
+
+            <!-- How to export -->
+            <div class="export-guide">
+                <h3>📱 How to export your WhatsApp chat</h3>
+                <div class="steps-row">
+                    <div class="guide-step">
+                        <div class="step-n">1</div>
+                        <p>Open any WhatsApp chat</p>
+                    </div>
+                    <div class="guide-arrow">→</div>
+                    <div class="guide-step">
+                        <div class="step-n">2</div>
+                        <p>Tap ⋮ → More → Export Chat</p>
+                    </div>
+                    <div class="guide-arrow">→</div>
+                    <div class="guide-step">
+                        <div class="step-n">3</div>
+                        <p>Choose "Without Media"</p>
+                    </div>
+                    <div class="guide-arrow">→</div>
+                    <div class="guide-step">
+                        <div class="step-n">4</div>
+                        <p>Save the .txt file and upload here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drop Zone -->
+            <div class="drop-zone" [class.dragging]="isDragging" (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave()" (drop)="onDrop($event)" (click)="fileInput.click()">
+                <div class="drop-icon">📂</div>
+                <h3>Drop your .txt file here</h3>
+                <p>or click to browse</p>
+                <div class="file-name" *ngIf="fileName">📄 {{ fileName }}</div>
+                <input #fileInput type="file" accept=".txt" (change)="onFileSelect($event)" style="display:none" />
+            </div>
+
+            <div class="error-msg" *ngIf="errorMsg">⚠️ {{ errorMsg }}</div>
+
+            <!-- Features -->
+            <div class="features-row">
+                <div class="feat-item">
+                    <span class="feat-icon">👤</span>
+                    <span>Per-person analysis</span>
+                </div>
+                <div class="feat-item">
+                    <span class="feat-icon">😊</span>
+                    <span>7 emotions detected</span>
+                </div>
+                <div class="feat-item">
+                    <span class="feat-icon">📊</span>
+                    <span>Sentiment breakdown</span>
+                </div>
+                <div class="feat-item">
+                    <span class="feat-icon">📥</span>
+                    <span>Export as CSV</span>
+                </div>
+                <div class="feat-item">
+                    <span class="feat-icon">🔒</span>
+                    <span>100% private — no data stored</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── ANALYSING STEP ───────────────────────────── -->
+        <div *ngIf="step === 'analysing'" class="analysing-screen">
+            <div class="analysing-icon">🤖</div>
+            <h2>Analysing your chat...</h2>
+            <p>Processing {{ analysedCount }} of {{ totalToAnalyse }} messages</p>
+
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" [style.width.%]="progress"></div>
+            </div>
+            <div class="progress-text">{{ progress }}% complete</div>
+
+            <div class="analysing-msgs">
+                <div class="a-msg" *ngFor="let m of analysedMessages.slice(-3)">
+                    <span class="a-sender">{{ m.sender }}:</span>
+                    <span class="a-text">{{ m.text.slice(0, 50) }}...</span>
+                    <span class="a-badge" [style.color]="sentimentColor[m.sentiment || 'neutral']">
+                        {{ m.sentiment }} {{ emotionEmoji[m.emotion || 'neutral'] }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── RESULTS STEP ─────────────────────────────── -->
+        <div *ngIf="step === 'results'">
+
+            <!-- Result Hero -->
+            <div class="result-hero">
+                <div>
+                    <h1>Analysis Complete! 🎉</h1>
+                    <p>Analysed {{ overallStats.total }} messages from {{ personStats.length }} participants</p>
+                </div>
+                <div class="result-actions">
+                    <button class="btn-export" (click)="exportResults()">📥 Export CSV</button>
+                    <button class="btn-reset" (click)="reset()">🔄 New Analysis</button>
+                </div>
+            </div>
+
+            <!-- Overall Stats -->
+            <div class="section-title">📊 Overall Mood</div>
+            <div class="overall-grid">
+                <div class="overall-card">
+                    <div class="ov-num">{{ overallStats.total }}</div>
+                    <div class="ov-lbl">Messages Analysed</div>
+                </div>
+                <div class="overall-card positive">
+                    <div class="ov-num">{{ overallStats.positive }}</div>
+                    <div class="ov-lbl">😊 Positive</div>
+                    <div class="ov-pct">{{ getPercent(overallStats.positive, overallStats.total) }}%</div>
+                </div>
+                <div class="overall-card negative">
+                    <div class="ov-num">{{ overallStats.negative }}</div>
+                    <div class="ov-lbl">😠 Negative</div>
+                    <div class="ov-pct">{{ getPercent(overallStats.negative, overallStats.total) }}%</div>
+                </div>
+                <div class="overall-card neutral">
+                    <div class="ov-num">{{ overallStats.neutral }}</div>
+                    <div class="ov-lbl">😐 Neutral</div>
+                    <div class="ov-pct">{{ getPercent(overallStats.neutral, overallStats.total) }}%</div>
+                </div>
+                <div class="overall-card emotion">
+                    <div class="ov-emoji">{{ emotionEmoji[overallStats.topEmotion] }}</div>
+                    <div class="ov-lbl">Dominant Emotion</div>
+                    <div class="ov-emotion">{{ overallStats.topEmotion | titlecase }}</div>
+                </div>
+            </div>
+
+            <!-- Sentiment Bar -->
+            <div class="sentiment-bar-wrap">
+                <div class="sentiment-bar">
+                    <div class="bar-seg positive"
+                        [style.width.%]="getPercent(overallStats.positive, overallStats.total)" title="Positive"></div>
+                    <div class="bar-seg neutral" [style.width.%]="getPercent(overallStats.neutral, overallStats.total)"
+                        title="Neutral"></div>
+                    <div class="bar-seg negative"
+                        [style.width.%]="getPercent(overallStats.negative, overallStats.total)" title="Negative"></div>
+                </div>
+                <div class="bar-legend">
+                    <span class="leg-item positive">😊 Positive {{ getPercent(overallStats.positive, overallStats.total)
+                        }}%</span>
+                    <span class="leg-item neutral">😐 Neutral {{ getPercent(overallStats.neutral, overallStats.total)
+                        }}%</span>
+                    <span class="leg-item negative">😠 Negative {{ getPercent(overallStats.negative, overallStats.total)
+                        }}%</span>
+                </div>
+            </div>
+
+            <!-- Per Person -->
+            <div class="section-title">👥 Per Person Analysis</div>
+            <div class="person-grid">
+                <div class="person-card" *ngFor="let p of personStats">
+                    <div class="person-header">
+                        <div class="person-avatar">{{ p.name.slice(0,2).toUpperCase() }}</div>
+                        <div>
+                            <div class="person-name">{{ p.name }}</div>
+                            <div class="person-sub">{{ p.total }} messages · {{ emotionEmoji[p.topEmotion] }} {{
+                                p.topEmotion | titlecase }}</div>
+                        </div>
+                    </div>
+                    <div class="person-bars">
+                        <div class="p-bar-row">
+                            <span>😊 Positive</span>
+                            <div class="p-bar-bg">
+                                <div class="p-bar-fill positive" [style.width.%]="getPercent(p.positive, p.total)">
+                                </div>
+                            </div>
+                            <span>{{ getPercent(p.positive, p.total) }}%</span>
+                        </div>
+                        <div class="p-bar-row">
+                            <span>😠 Negative</span>
+                            <div class="p-bar-bg">
+                                <div class="p-bar-fill negative" [style.width.%]="getPercent(p.negative, p.total)">
+                                </div>
+                            </div>
+                            <span>{{ getPercent(p.negative, p.total) }}%</span>
+                        </div>
+                        <div class="p-bar-row">
+                            <span>😐 Neutral</span>
+                            <div class="p-bar-bg">
+                                <div class="p-bar-fill neutral" [style.width.%]="getPercent(p.neutral, p.total)"></div>
+                            </div>
+                            <span>{{ getPercent(p.neutral, p.total) }}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Highlights -->
+            <div class="section-title">🔥 Message Highlights</div>
+            <div class="highlights-grid">
+                <div class="highlight-card positive-card" *ngIf="mostPositive">
+                    <div class="h-badge">Most Positive 😊</div>
+                    <div class="h-sender">{{ mostPositive.sender }}</div>
+                    <div class="h-text">"{{ mostPositive.text }}"</div>
+                    <div class="h-score">{{ ((mostPositive.sentimentScore || 0) * 100).toFixed(1) }}% positive</div>
+                </div>
+                <div class="highlight-card negative-card" *ngIf="mostNegative">
+                    <div class="h-badge">Most Negative 😠</div>
+                    <div class="h-sender">{{ mostNegative.sender }}</div>
+                    <div class="h-text">"{{ mostNegative.text }}"</div>
+                    <div class="h-score">{{ ((mostNegative.sentimentScore || 0) * 100).toFixed(1) }}% negative</div>
+                </div>
+            </div>
+
+            <!-- Message List -->
+            <div class="section-title">💬 All Analysed Messages</div>
+            <div class="msg-list">
+                <div class="msg-item" *ngFor="let m of analysedMessages">
+                    <div class="msg-meta">
+                        <span class="msg-sender">{{ m.sender }}</span>
+                        <span class="msg-time">{{ m.date }} {{ m.time }}</span>
+                        <span class="msg-sentiment" [style.color]="sentimentColor[m.sentiment || 'neutral']">
+                            {{ m.sentiment }} {{ emotionEmoji[m.emotion || 'neutral'] }}
+                        </span>
+                    </div>
+                    <div class="msg-text">{{ m.text }}</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<app-footer></app-footer>
