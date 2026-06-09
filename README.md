@@ -115,14 +115,14 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-### 3. Node Backend (Coming Soon)
+### 3. Node Backend 
 ```bash
 cd node-backend
 npm install
 npm run dev
 ```
 
-### 4. Angular Frontend (Coming Soon)
+### 4. Angular Frontend 
 ```bash
 cd angular-frontend
 npm install
@@ -161,7 +161,7 @@ ng serve
 
 ## 👩‍💻 Author
 
-**Tanvi** — 8th Semester CS Student  
+**Tanvi** — Aspiring  Software Engineer & AIML Enthusiast 
 GitHub: [@tanvi20206](https://github.com/tanvi20206)
 
 ---
@@ -173,8 +173,8 @@ GitHub: [@tanvi20206](https://github.com/tanvi20206)
 - [x] Day 1 — Django project setup
 - [x] Day 2 — JWT Authentication API
 - [x] Day 3 — HuggingFace AI model integration
-- [ ] Day 4 — Node.js + Socket.IO real-time feed
-- [ ] Day 5 — Angular dashboard
-- [ ] Day 6 — Live emotion charts
-- [ ] Day 7 — CSV bulk upload
+- [x] Day 4 — Node.js + Socket.IO real-time feed
+- [x] Day 5 — Angular dashboard
+- [x] Day 6 — Live emotion charts
+- [x] Day 7 — CSV bulk upload
 - [ ] Day 8 — Docker + Deployment
